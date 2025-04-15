@@ -1,5 +1,5 @@
 const apiKey = "acd658a6376438e3aa6631ccb18c6227";
-const totalPages = 2; // Tu peux augmenter ça si tu veux plus de pages
+const totalPages = 2; //   pour afficher plus de pages + la valeur ^^ 
 
 const fetchAllPopularSeries = async () => {
   const serieContainer = document.getElementById("serie-container");
@@ -18,19 +18,25 @@ const fetchAllPopularSeries = async () => {
       data.results.forEach(serie => {
         const serieDiv = document.createElement("div");
         serieDiv.classList.add("serie");
-
+      
         const imageUrl = serie.poster_path
           ? `https://image.tmdb.org/t/p/w300${serie.poster_path}`
           : "https://via.placeholder.com/300x450?text=Pas+d'image";
-
+      
         serieDiv.innerHTML = `
           <img src="${imageUrl}" alt="${serie.name}">
           <h3>${serie.name}</h3>
           <p>Note : ${serie.vote_average} / 10</p>
         `;
-
+      
+        // 👉 Clique sur la série
+        serieDiv.addEventListener("click", () => {
+          afficherDetailsSerie(serie);
+        });
+      
         serieContainer.appendChild(serieDiv);
       });
+      
     }
   } catch (error) {
     console.error("❌ Une erreur :", error);
@@ -39,3 +45,34 @@ const fetchAllPopularSeries = async () => {
 };
 
 fetchAllPopularSeries();
+
+const afficherDetailsSerie = (serie) => {
+  const serieContainer = document.getElementById("serie-container");
+
+  // Tu peux choisir d'effacer le reste ou non
+  serieContainer.innerHTML = ""; // 👉 efface tout
+
+  const imageUrl = serie.poster_path
+    ? `https://image.tmdb.org/t/p/w300${serie.poster_path}`
+    : "https://via.placeholder.com/300x450?text=Pas+d'image";
+
+  const detailsDiv = document.createElement("div");
+  detailsDiv.classList.add("serie-details");
+
+  detailsDiv.innerHTML = `
+    <img src="${imageUrl}" alt="${serie.name}">
+    <h2>${serie.name}</h2>
+    <p><strong>Aperçu :</strong> ${serie.overview || "Pas de description."}</p>
+    <p><strong>Popularité :</strong> ${serie.popularity}</p>
+    <p><strong>Note moyenne :</strong> ${serie.vote_average} / 10</p>
+    <button id="retour-btn">⬅ Revenir à la liste</button>
+  `;
+
+  serieContainer.appendChild(detailsDiv);
+
+  // bouton retour
+  document.getElementById("retour-btn").addEventListener("click", () => {
+    serieContainer.innerHTML = "";
+    fetchAllPopularSeries();
+  });
+};

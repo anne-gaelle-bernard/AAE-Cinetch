@@ -45,3 +45,68 @@ body {
     font-size: 1em;
   }
   
+
+  #search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#suggestions {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-width: 400px;
+    position: absolute;
+    z-index: 1000;
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #f0f0f0;
+}
+
+
+
+/**
+ * Affichage des détails de la série.
+ * Cette fonction/méthode est utilisée pour afficher les informations
+ * détaillées concernant une série spécifique titre
+ * la description
+ */
+
+
+ .serie, .serie-details {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  max-width: 300px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.serie:hover {
+  transform: scale(1.05);
+}
+
+.serie-details {
+  max-width: 600px;
+}
+
+#retour-btn {
+  margin-top: 15px;
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}

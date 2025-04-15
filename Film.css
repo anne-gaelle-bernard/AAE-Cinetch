@@ -1,0 +1,16 @@
+body {
+  background-color: black;
+}
+
+@font-face {
+  font-family: 'cinepolice';
+  src: url(batmfa__.ttf) format('truetype'); 
+}
+
+h1 {
+  font-family: 'cinepolice', sans-serif;
+  color: white;
+  text-align: center;
+  font-size: 50px;
+  margin-top: 20px;
+}

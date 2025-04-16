@@ -1,15 +1,26 @@
+// Clé API fournie par The Movie Database (TMDb)
 const apiKey = "acd658a6376438e3aa6631ccb18c6227";
+
+// Nombre total de pages disponibles pour la pagination
 const totalPages = 10;
+// Page actuellement affichée
 let currentPage = 1;
+// Stocke temporairement toutes les séries de la page actuelle
 let allSeries = [];
 
+// Sélection des éléments du DOM nécessaires pour l'affichage et la navigation
 const serieContainer = document.getElementById("serie-container");
 const currentPageSpan = document.getElementById("current-page");
 const prevPageBtn = document.getElementById("prev-page");
 const nextPageBtn = document.getElementById("next-page");
+const resetPageBtn = document.getElementById("reset-page-btn");
 const pagination = document.getElementById("pagination");
+const searchInput = document.getElementById("search-input");
+const suggestions = document.getElementById("suggestions");
 
+// Fonction principale qui récupère les séries via l'API en fonction de la page
 const fetchSeriesByPage = async (page) => {
+  // Réinitialise l'affichage et le tableau
   serieContainer.innerHTML = "";
   allSeries = [];
 
@@ -22,23 +33,54 @@ const fetchSeriesByPage = async (page) => {
     }
 
     const data = await response.json();
+    const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
 
-    data.results.forEach(serie => {
+    // Pour chaque série reçue, on crée un élément à afficher
+    data.results.forEach((serie) => {
       allSeries.push(serie);
 
       const serieDiv = document.createElement("div");
       serieDiv.classList.add("serie");
+      serieDiv.style.position = "relative";
 
       const imageUrl = serie.poster_path
         ? `https://image.tmdb.org/t/p/w300${serie.poster_path}`
         : "https://via.placeholder.com/300x450?text=Pas+d'image";
 
+      // Crée l'icône de cœur pour ajouter/retirer des favoris
+      const coeurIcon = document.createElement("span");
+      coeurIcon.classList.add("coeur-icon");
+      coeurIcon.innerHTML = favoris.includes(serie.id) ? "❤️" : "🤍";
+      coeurIcon.style.cursor = "pointer";
+      coeurIcon.style.fontSize = "1.5rem";
+      coeurIcon.style.position = "absolute";
+      coeurIcon.style.top = "10px";
+      coeurIcon.style.right = "10px";
+
+      // Gère le clic sur le cœur (ajout ou retrait des favoris)
+      coeurIcon.addEventListener("click", (e) => {
+        e.stopPropagation();
+        let favoris = JSON.parse(localStorage.getItem("favoris")) || [];
+        if (favoris.includes(serie.id)) {
+          favoris = favoris.filter((id) => id !== serie.id);
+          coeurIcon.innerHTML = "🤍";
+        } else {
+          favoris.push(serie.id);
+          coeurIcon.innerHTML = "❤️";
+        }
+        localStorage.setItem("favoris", JSON.stringify(favoris));
+      });
+
+      // Contenu HTML de chaque série
       serieDiv.innerHTML = `
         <img src="${imageUrl}" alt="${serie.name}">
         <h3>${serie.name}</h3>
         <p>Note : ${Math.round(serie.vote_average)} / 10</p>
       `;
 
+      serieDiv.appendChild(coeurIcon);
+
+      // Gère le clic sur une série pour afficher les détails
       serieDiv.addEventListener("click", () => {
         afficherDetailsSerie(serie);
       });
@@ -46,6 +88,7 @@ const fetchSeriesByPage = async (page) => {
       serieContainer.appendChild(serieDiv);
     });
 
+    // Met à jour l'état de la pagination
     currentPageSpan.textContent = `Page ${currentPage}`;
     prevPageBtn.disabled = currentPage === 1;
     nextPageBtn.disabled = currentPage === totalPages;
@@ -56,10 +99,10 @@ const fetchSeriesByPage = async (page) => {
   }
 };
 
-// Appel initial de la fonction
+// Chargement initial de la première page
 fetchSeriesByPage(currentPage);
 
-// Navigation entre pages
+// Navigation entre les pages
 prevPageBtn.addEventListener("click", () => {
   if (currentPage > 1) {
     currentPage--;
@@ -74,56 +117,49 @@ nextPageBtn.addEventListener("click", () => {
   }
 });
 
-const afficherDetailsSerie = (serie) => {
-  // Cacher la pagination
-  pagination.style.display = "none";
+resetPageBtn.addEventListener("click", () => {
+  currentPage = 1;
+  fetchSeriesByPage(currentPage);
+});
 
-  // Vide la zone où les séries sont affichées
+// Affiche les détails d'une série sélectionnée
+const afficherDetailsSerie = (serie) => {
+  pagination.style.display = "none";
   serieContainer.innerHTML = "";
 
-  // Crée un nouveau conteneur pour les détails
   const detailsDiv = document.createElement("div");
   detailsDiv.classList.add("serie-details");
 
-  // Crée l'image
   const image = document.createElement("img");
   image.src = serie.poster_path
     ? `https://image.tmdb.org/t/p/w300${serie.poster_path}`
     : "https://via.placeholder.com/300x450?text=Pas+d'image";
   image.alt = serie.name;
 
-  // Crée le titre de la série
   const title = document.createElement("h2");
   title.textContent = serie.name;
 
-  // Crée l'aperçu (description)
   const overviewParagraph = document.createElement("p");
   overviewParagraph.innerHTML = `<strong>Aperçu :</strong> ${serie.overview || "Pas de description."}`;
 
-  // Crée la popularité
   const popularityParagraph = document.createElement("p");
   popularityParagraph.innerHTML = `<strong>Popularité :</strong> ${serie.popularity}`;
 
-  // Crée la note moyenne
   const voteAverageParagraph = document.createElement("p");
-  voteAverageParagraph.innerHTML = `<strong>Note moyenne :</strong> ${serie.vote_average} / 10`;
+  voteAverageParagraph.innerHTML = `<strong>Note moyenne :</strong> ${Math.round(serie.vote_average)} / 10`;
 
-  // Crée le bouton pour revenir à la liste
   const retourBtn = document.createElement("button");
   retourBtn.id = "retour-btn";
   retourBtn.textContent = "⬅ Revenir à la liste";
-  
-  // Ajoute l'événement pour revenir à la liste des séries
   retourBtn.addEventListener("click", () => {
     fetchSeriesByPage(currentPage);
-    pagination.style.display = "block";  // Réafficher la pagination
+    pagination.style.display = "block";
   });
 
-  // Crée le formulaire de commentaire
+  // Création du formulaire de commentaires
   const commentForm = document.createElement("form");
   commentForm.id = "comment-form";
 
-  // Crée le champ pour le nom
   const nameLabel = document.createElement("label");
   nameLabel.setAttribute("for", "name-input");
   nameLabel.textContent = "Votre nom :";
@@ -134,7 +170,6 @@ const afficherDetailsSerie = (serie) => {
   nameInput.placeholder = "Entrez votre nom...";
   nameInput.required = true;
 
-  // Crée le champ pour le commentaire
   const commentLabel = document.createElement("label");
   commentLabel.setAttribute("for", "comment-input");
   commentLabel.textContent = "Laisser un commentaire :";
@@ -145,19 +180,17 @@ const afficherDetailsSerie = (serie) => {
   commentInput.placeholder = "Écrivez votre commentaire ici...";
   commentInput.required = true;
 
-  // Crée le bouton d'envoi du commentaire
   const submitBtn = document.createElement("button");
   submitBtn.type = "submit";
   submitBtn.textContent = "Envoyer";
 
-  // Ajoute les éléments du formulaire
   commentForm.appendChild(nameLabel);
   commentForm.appendChild(nameInput);
   commentForm.appendChild(commentLabel);
   commentForm.appendChild(commentInput);
   commentForm.appendChild(submitBtn);
 
-  // Crée la section des commentaires
+  // Zone des commentaires
   const commentsSection = document.createElement("div");
   commentsSection.id = "comments-section";
 
@@ -170,7 +203,6 @@ const afficherDetailsSerie = (serie) => {
   commentsSection.appendChild(commentsTitle);
   commentsSection.appendChild(commentsList);
 
-  // Ajoute les éléments dans le div des détails
   detailsDiv.appendChild(image);
   detailsDiv.appendChild(title);
   detailsDiv.appendChild(overviewParagraph);
@@ -180,14 +212,13 @@ const afficherDetailsSerie = (serie) => {
   detailsDiv.appendChild(commentForm);
   detailsDiv.appendChild(commentsSection);
 
-  // Ajoute le div des détails dans le conteneur principal
   serieContainer.appendChild(detailsDiv);
 
-  // Récupère les commentaires existants depuis le localStorage
+  // Clé pour enregistrer les commentaires dans le localStorage
   const localStorageKey = `comments_${serie.id}`;
   const existingComments = JSON.parse(localStorage.getItem(localStorageKey)) || [];
 
-  // Fonction pour rendre les commentaires
+  // Fonction pour afficher les commentaires
   const renderComments = () => {
     commentsList.innerHTML = "";
     existingComments.forEach((comment) => {
@@ -199,7 +230,7 @@ const afficherDetailsSerie = (serie) => {
 
   renderComments();
 
-  // Ajoute un commentaire
+  // Gestion de l'envoi du formulaire
   commentForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const newComment = {
@@ -217,20 +248,17 @@ const afficherDetailsSerie = (serie) => {
   });
 };
 
-// 🔍 Barre de recherche avec suggestions
-const searchInput = document.getElementById("search-input");
-const suggestions = document.getElementById("suggestions");
-
+// Barre de recherche avec suggestions dynamiques
 searchInput.addEventListener("input", () => {
   const query = searchInput.value.toLowerCase();
   suggestions.innerHTML = "";
 
   if (query.length >= 2) {
-    const matchedSeries = allSeries.filter(serie =>
+    const matchedSeries = allSeries.filter((serie) =>
       serie.name.toLowerCase().includes(query)
     );
 
-    matchedSeries.forEach(serie => {
+    matchedSeries.forEach((serie) => {
       const div = document.createElement("div");
       div.textContent = serie.name;
       div.classList.add("suggestion-item");
@@ -244,11 +272,4 @@ searchInput.addEventListener("input", () => {
       suggestions.appendChild(div);
     });
   }
-});
-
-const resetPageBtn = document.getElementById("reset-page-btn");
-
-resetPageBtn.addEventListener("click", () => {
-  currentPage = 1;  // Réinitialise la page à 1
-  fetchSeriesByPage(currentPage);  // Recharge les séries de la page 1
 });

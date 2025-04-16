@@ -221,3 +221,11 @@ body {
 #reset-page-btn:hover {
   background-color: #0056b3;
 }
+
+.coeur-icon {
+  transition: transform 0.2s ease;
+}
+
+.coeur-icon:hover {
+  transform: scale(1.2);
+}

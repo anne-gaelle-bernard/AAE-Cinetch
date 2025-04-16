@@ -36,7 +36,7 @@ const fetchSeriesByPage = async (page) => {
       serieDiv.innerHTML = `
         <img src="${imageUrl}" alt="${serie.name}">
         <h3>${serie.name}</h3>
-        <p>Note : ${serie.vote_average} / 10</p>
+        <p>Note : ${Math.round(serie.vote_average)} / 10</p>
       `;
 
       serieDiv.addEventListener("click", () => {
@@ -244,4 +244,11 @@ searchInput.addEventListener("input", () => {
       suggestions.appendChild(div);
     });
   }
+});
+
+const resetPageBtn = document.getElementById("reset-page-btn");
+
+resetPageBtn.addEventListener("click", () => {
+  currentPage = 1;  // Réinitialise la page à 1
+  fetchSeriesByPage(currentPage);  // Recharge les séries de la page 1
 });

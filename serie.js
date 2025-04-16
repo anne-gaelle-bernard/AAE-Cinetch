@@ -49,8 +49,7 @@ fetchAllPopularSeries();
 const afficherDetailsSerie = (serie) => {
   const serieContainer = document.getElementById("serie-container");
 
-  // Tu peux choisir d'effacer le reste ou non
-  serieContainer.innerHTML = ""; // 👉 efface tout
+  serieContainer.innerHTML = "";
 
   const imageUrl = serie.poster_path
     ? `https://image.tmdb.org/t/p/w300${serie.poster_path}`
@@ -66,6 +65,17 @@ const afficherDetailsSerie = (serie) => {
     <p><strong>Popularité :</strong> ${serie.popularity}</p>
     <p><strong>Note moyenne :</strong> ${serie.vote_average} / 10</p>
     <button id="retour-btn">⬅ Revenir à la liste</button>
+    <form id="comment-form">
+      <label for="name-input">Votre nom :</label>
+      <input type="text" id="name-input" placeholder="Entrez votre nom..." required />
+      <label for="comment-input">Laisser un commentaire :</label>
+      <textarea id="comment-input" rows="4" placeholder="Écrivez votre commentaire ici..." required></textarea>
+      <button type="submit">Envoyer</button>
+    </form>
+    <div id="comments-section">
+      <h3>Commentaires :</h3>
+      <ul id="comments-list"></ul>
+    </div>
   `;
 
   serieContainer.appendChild(detailsDiv);
@@ -75,4 +85,46 @@ const afficherDetailsSerie = (serie) => {
     serieContainer.innerHTML = "";
     fetchAllPopularSeries();
   });
+
+  const commentForm = document.getElementById("comment-form");
+  const commentsList = document.getElementById("comments-list");
+
+  const localStorageKey = `comments_${serie.id}`;
+
+  //  Charger les commentaires  depuis le Storage
+  const existingComments = JSON.parse(localStorage.getItem(localStorageKey)) || [];
+
+  const renderComments = () => {
+    commentsList.innerHTML = "";
+    existingComments.forEach((comment) => {
+      const li = document.createElement("li");
+      li.innerHTML = `<strong>${comment.name} :</strong> ${comment.text}`;
+      commentsList.appendChild(li);
+    });
+  };
+
+  renderComments();
+
+  //  Gestion de l'envoi du formulaire
+  commentForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const nameInput = document.getElementById("name-input");
+    const commentInput = document.getElementById("comment-input");
+
+    const newComment = {
+      name: nameInput.value.trim(),
+      text: commentInput.value.trim(),
+    };
+
+    if (newComment.name && newComment.text) {
+      existingComments.push(newComment);
+      localStorage.setItem(localStorageKey, JSON.stringify(existingComments));
+      renderComments();
+
+      // Réinitialiser le formulaire
+      nameInput.value = "";
+      commentInput.value = "";
+    }
+  });
 };
+

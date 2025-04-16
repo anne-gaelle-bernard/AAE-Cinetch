@@ -110,3 +110,34 @@ body {
   border-radius: 6px;
   cursor: pointer;
 }
+
+/* Style pour le formulaire de  de message */
+
+#comment-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+#comment-form input,
+#comment-form textarea {
+  width: 90%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: inherit;
+}
+
+#comment-form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#comment-form button:hover {
+  background-color: #0056b3;
+}

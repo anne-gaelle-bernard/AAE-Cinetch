@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="serie.js" defer></script>
-    <link rel="stylesheet" href="style/serie.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Séries Populaires</title>
+  <script src="serie.js" defer></script>
+  <link rel="stylesheet" href="style/serie.css" />
 </head>
 <body>
-    <input type="text" id="search-input" placeholder="Rechercher une série..." />
-    <div id="suggestions"></div>
-    
-    <div id="serie-container"> </div>
-    <form id="comment-form">
+  <input type="text" id="search-input" placeholder="Rechercher une série..." />
+  <div id="suggestions"></div>
 
-   
+  <div id="serie-container"></div>
+
+  <div id="pagination">
+    <button id="prev-page">⬅ Précédent</button>
+    <span id="current-page">Page 1</span>
+    <button id="next-page">Suivant ➡</button>
+  </div>
 </body>
 </html>

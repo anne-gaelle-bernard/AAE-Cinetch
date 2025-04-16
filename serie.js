@@ -1,14 +1,12 @@
+
 // Clé API fournie par The Movie Database (TMDb)
 const apiKey = "acd658a6376438e3aa6631ccb18c6227";
 
 // Nombre total de pages disponibles pour la pagination
 const totalPages = 10;
-// Page actuellement affichée
 let currentPage = 1;
-// Stocke temporairement toutes les séries de la page actuelle
 let allSeries = [];
 
-// Sélection des éléments du DOM nécessaires pour l'affichage et la navigation
 const serieContainer = document.getElementById("serie-container");
 const currentPageSpan = document.getElementById("current-page");
 const prevPageBtn = document.getElementById("prev-page");
@@ -18,9 +16,7 @@ const pagination = document.getElementById("pagination");
 const searchInput = document.getElementById("search-input");
 const suggestions = document.getElementById("suggestions");
 
-// Fonction principale qui récupère les séries via l'API en fonction de la page
 const fetchSeriesByPage = async (page) => {
-  // Réinitialise l'affichage et le tableau
   serieContainer.innerHTML = "";
   allSeries = [];
 
@@ -28,14 +24,11 @@ const fetchSeriesByPage = async (page) => {
     const url = `https://api.themoviedb.org/3/tv/popular?api_key=${apiKey}&language=fr-FR&page=${page}`;
     const response = await fetch(url);
 
-    if (!response.ok) {
-      throw new Error(`Erreur HTTP ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
 
     const data = await response.json();
-    const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
+    const favoris = JSON.parse(localStorage.getItem("series_favoris")) || [];
 
-    // Pour chaque série reçue, on crée un élément à afficher
     data.results.forEach((serie) => {
       allSeries.push(serie);
 
@@ -47,7 +40,6 @@ const fetchSeriesByPage = async (page) => {
         ? `https://image.tmdb.org/t/p/w300${serie.poster_path}`
         : "https://via.placeholder.com/300x450?text=Pas+d'image";
 
-      // Crée l'icône de cœur pour ajouter/retirer des favoris
       const coeurIcon = document.createElement("span");
       coeurIcon.classList.add("coeur-icon");
       coeurIcon.innerHTML = favoris.includes(serie.id) ? "❤️" : "🤍";
@@ -57,10 +49,9 @@ const fetchSeriesByPage = async (page) => {
       coeurIcon.style.top = "10px";
       coeurIcon.style.right = "10px";
 
-      // Gère le clic sur le cœur (ajout ou retrait des favoris)
       coeurIcon.addEventListener("click", (e) => {
         e.stopPropagation();
-        let favoris = JSON.parse(localStorage.getItem("favoris")) || [];
+        let favoris = JSON.parse(localStorage.getItem("series_favoris")) || [];
         if (favoris.includes(serie.id)) {
           favoris = favoris.filter((id) => id !== serie.id);
           coeurIcon.innerHTML = "🤍";
@@ -68,10 +59,9 @@ const fetchSeriesByPage = async (page) => {
           favoris.push(serie.id);
           coeurIcon.innerHTML = "❤️";
         }
-        localStorage.setItem("favoris", JSON.stringify(favoris));
+        localStorage.setItem("series_favoris", JSON.stringify(favoris));
       });
 
-      // Contenu HTML de chaque série
       serieDiv.innerHTML = `
         <img src="${imageUrl}" alt="${serie.name}">
         <h3>${serie.name}</h3>
@@ -80,7 +70,6 @@ const fetchSeriesByPage = async (page) => {
 
       serieDiv.appendChild(coeurIcon);
 
-      // Gère le clic sur une série pour afficher les détails
       serieDiv.addEventListener("click", () => {
         afficherDetailsSerie(serie);
       });
@@ -88,7 +77,6 @@ const fetchSeriesByPage = async (page) => {
       serieContainer.appendChild(serieDiv);
     });
 
-    // Met à jour l'état de la pagination
     currentPageSpan.textContent = `Page ${currentPage}`;
     prevPageBtn.disabled = currentPage === 1;
     nextPageBtn.disabled = currentPage === totalPages;
@@ -99,10 +87,8 @@ const fetchSeriesByPage = async (page) => {
   }
 };
 
-// Chargement initial de la première page
 fetchSeriesByPage(currentPage);
 
-// Navigation entre les pages
 prevPageBtn.addEventListener("click", () => {
   if (currentPage > 1) {
     currentPage--;
@@ -122,7 +108,6 @@ resetPageBtn.addEventListener("click", () => {
   fetchSeriesByPage(currentPage);
 });
 
-// Affiche les détails d'une série sélectionnée
 const afficherDetailsSerie = (serie) => {
   pagination.style.display = "none";
   serieContainer.innerHTML = "";
@@ -156,7 +141,6 @@ const afficherDetailsSerie = (serie) => {
     pagination.style.display = "block";
   });
 
-  // Création du formulaire de commentaires
   const commentForm = document.createElement("form");
   commentForm.id = "comment-form";
 
@@ -190,7 +174,6 @@ const afficherDetailsSerie = (serie) => {
   commentForm.appendChild(commentInput);
   commentForm.appendChild(submitBtn);
 
-  // Zone des commentaires
   const commentsSection = document.createElement("div");
   commentsSection.id = "comments-section";
 
@@ -214,11 +197,9 @@ const afficherDetailsSerie = (serie) => {
 
   serieContainer.appendChild(detailsDiv);
 
-  // Clé pour enregistrer les commentaires dans le localStorage
   const localStorageKey = `comments_${serie.id}`;
   const existingComments = JSON.parse(localStorage.getItem(localStorageKey)) || [];
 
-  // Fonction pour afficher les commentaires
   const renderComments = () => {
     commentsList.innerHTML = "";
     existingComments.forEach((comment) => {
@@ -230,7 +211,6 @@ const afficherDetailsSerie = (serie) => {
 
   renderComments();
 
-  // Gestion de l'envoi du formulaire
   commentForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const newComment = {
@@ -248,7 +228,6 @@ const afficherDetailsSerie = (serie) => {
   });
 };
 
-// Barre de recherche avec suggestions dynamiques
 searchInput.addEventListener("input", () => {
   const query = searchInput.value.toLowerCase();
   suggestions.innerHTML = "";

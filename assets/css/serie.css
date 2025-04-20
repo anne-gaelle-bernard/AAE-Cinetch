@@ -1,0 +1,167 @@
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #141414;
+  color: #ffffff;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 20px;
+  color: #e50914;
+  font-size: 2.5em;
+}
+
+#serie-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin: 30px;
+}
+
+.serie {
+  width: 200px;
+  background-color: #1f1f1f;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease;
+}
+
+.serie:hover {
+  transform: scale(1.1);
+}
+
+.serie img {
+  width: 100%;
+  display: block;
+  border-bottom: 2px solid #e50914;
+}
+
+h3 {
+  font-size: 1.2em;
+  margin: 10px 0;
+  color: #fff;
+}
+
+p {
+  color: #b3b3b3;
+  font-size: 0.95em;
+}
+
+/* Nouveau conteneur autour de la barre de recherche et suggestions */
+#search-container {
+  position: relative;
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+#search-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  background-color: #333;
+  color: #fff;
+}
+
+#suggestions {
+  background: #1f1f1f;
+  border: 1px solid #333;
+  border-radius: 5px;
+  position: absolute;
+  width: 100%;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  color: white;
+}
+
+.suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #333;
+}
+
+.suggestion-item:hover {
+  background-color: #333;
+}
+
+.serie-details {
+  max-width: 600px;
+  margin: auto;
+  background-color: #1f1f1f;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+#retour-btn,
+#reset-page-btn,
+#comment-form button,
+#pagination button {
+  background-color: #e50914;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+#retour-btn:hover,
+#reset-page-btn:hover,
+#comment-form button:hover,
+#pagination button:hover:not(:disabled) {
+  background-color: #f40612;
+  transform: scale(1.05);
+}
+
+#pagination {
+  margin-top: 30px;
+  text-align: center;
+}
+
+#pagination span {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 18px;
+  margin: 0 10px;
+}
+
+#pagination button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+#comment-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+#comment-form input,
+#comment-form textarea {
+  width: 90%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: none;
+  background-color: #333;
+  color: white;
+  border-radius: 5px;
+}
+
+.coeur-icon {
+  transition: transform 0.2s ease;
+  color: #e50914;
+}
+
+.coeur-icon:hover {
+  transform: scale(1.2);
+}

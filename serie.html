@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Liste de Séries</title>
+  <link rel="stylesheet" href="assets/css/serie.css">
+</head>
+<body>
+
+  <!-- Champ de recherche + suggestions -->
+  <div id="search-container">
+    <input id="search-input" placeholder="Rechercher une série..." />
+    <div id="suggestions"></div>
+  </div>
+
+  <!-- Conteneur des séries -->
+  <div id="serie-container"></div>
+
+  <!-- Pagination -->
+  <div id="pagination">
+    <button id="prev-page">Précédente</button>
+    <span id="current-page">Page 1</span>
+    <button id="next-page">Suivante</button>
+    <button id="reset-page-btn">Reset</button>
+  </div>
+
+  <!-- Script principal -->
+  <script type="module" src="assets/js/principale.js"></script>
+
+</body>
+</html>

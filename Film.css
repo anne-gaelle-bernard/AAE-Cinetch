@@ -1,0 +1,53 @@
+body {
+  background-color: black;
+}
+
+@font-face {
+  font-family: 'cinepolice';
+  src: url(batmfa__.ttf) format('truetype'); 
+}
+
+h1 {
+  font-family: 'cinepolice', sans-serif;
+  color: white;
+  text-align: center;
+  font-size: 50px;
+  margin-top: 20px;
+}
+
+h2 {
+  font-family: 'cinepolice', sans-serif;
+  color: rgba(157, 20, 181, 0.656);
+  text-align: center;
+  font-size: 30px;
+  margin-top: 20px;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between; /* espace entre le logo et la liste */
+  align-items: center;
+  padding: 10px 20px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.7) 10%, rgba(0,0,0,0));
+}
+
+.logo {
+  color:#e50914; /* couleur du texte du logo */
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 20px; /* espacement entre les éléments */
+}
+
+.nav-links li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+}
+.nav-links a:hover {
+  color: #b3b3b3;
+}

@@ -116,3 +116,50 @@ body {
   .nav-links a:hover {
     color: #b3b3b3;
   }
+
+  #favoris-films {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+  
+  .card {
+    position: relative;
+    border: none;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    border-radius: 10px;
+  }
+  
+  .card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+  }
+  
+  .card img {
+    height: 400px;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  
+  .card-body {
+    background: #111;
+    padding: 1rem;
+    text-align: center;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  
+  .card-title {
+    font-size: 1.1rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+  
+  .card-text {
+    color: #ccc;
+    font-size: 0.9rem;
+  }
+  

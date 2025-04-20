@@ -1,0 +1,118 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #141414;
+    color: #fff;
+  }
+  
+  h1 {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 2em;
+  }
+  
+  #serie-container,
+  #favoris-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  .serie {
+    position: relative;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .serie:hover {
+    transform: scale(1.06);
+    z-index: 2;
+  }
+  
+  .serie img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .serie h3 {
+    margin: 8px;
+    font-size: 0.95rem;
+    line-height: 1.2em;
+  }
+  
+  .serie p {
+    margin: 0 8px 8px;
+    font-size: 0.8rem;
+    color: #b3b3b3;
+  }
+  
+  .coeur-icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 1.3em;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  @media (max-width: 768px) {
+    #serie-container,
+    #favoris-container {
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+    }
+  
+    .serie img {
+      height: 180px;
+    }
+  
+    .serie h3 {
+      font-size: 0.85rem;
+    }
+  
+    .serie p {
+      font-size: 0.75rem;
+    }
+  
+    .coeur-icon {
+      font-size: 1.1em;
+    }
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between; /* espace entre le logo et la liste */
+    align-items: center;
+    padding: 10px 20px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.7) 10%, rgba(0,0,0,0));
+  }
+  
+  .logo {
+    color:#e50914; /* couleur du texte du logo */
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .nav-links {
+    display: flex;
+    list-style: none;
+    gap: 20px; /* espacement entre les éléments */
+  }
+  
+  .nav-links li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  .nav-links a:hover {
+    color: #b3b3b3;
+  }

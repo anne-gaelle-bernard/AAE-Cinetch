@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Title</title>
-    <link rel="stylesheet" href="/assets/css/serie.css">
+  <meta charset="UTF-8">
+  <title>Favoris</title>
+    <link rel="stylesheet" href="assets/css/favoris.css">
 </head>
 <body>
     <nav class="navbar" id="navbar">
-        <a href="#" class="logo">STREAMFLIX</a>
+        <a href="index.html" class="logo">STREAMFLIX</a>
         <ul class="nav-links">
           <li><a href="serie.html">TV Shows</a></li>
           <li><a href="#">Movies</a></li>
           <li><a href="favoris.html">My List</a></li>
         </ul>
-      </nav> 
-   
-    <main>
-       
-    </main>
-    <footer>
-   
-    </footer>
+      </nav>
+  <h1>Mes séries favorites</h1>
+  <div id="favoris-container"></div>
+
+  <script type="module">
+    import { renderFavorisList } from './assets/js/interface.js';
+    document.addEventListener("DOMContentLoaded", renderFavorisList);
+  </script>
 </body>
 </html>
+
+

@@ -97,3 +97,41 @@ export const setupSearch = () => {
     }
   });
 };
+
+// Gère l'affichage de la liste des séries favorites  
+import { fetchFavorisDetails } from './api.js';
+
+export const renderFavorisList = async () => {
+  const container = document.getElementById("favoris-container");
+  const favoris = JSON.parse(localStorage.getItem("series_favoris")) || [];
+
+  container.innerHTML = "";
+
+  if (favoris.length === 0) {
+    container.innerHTML = "<p>Aucune série favorite.</p>";
+    return;
+  }
+
+  const series = await fetchFavorisDetails(favoris);
+
+  series.forEach((serie) => {
+    const div = document.createElement("div");
+    div.className = "serie";
+
+    const imageUrl = serie.poster_path
+      ? `https://image.tmdb.org/t/p/w300${serie.poster_path}`
+      : "https://via.placeholder.com/300x450?text=Pas+d'image";
+
+    div.innerHTML = `
+      <img src="${imageUrl}" alt="${serie.name}">
+      <h3>${serie.name}</h3>
+      <p>Note : ${Math.round(serie.vote_average)} / 10</p>
+    `;
+
+    container.appendChild(div);
+  });
+};
+
+
+
+

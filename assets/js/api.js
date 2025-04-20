@@ -29,3 +29,23 @@ export const fetchSeriesByPage = async (page) => {
     console.error("Erreur de chargement des séries :", error);
   }
 };
+export const fetchFavorisDetails = async (favoris) => {
+  const apiKey = "acd658a6376438e3aa6631ccb18c6227";
+
+  const promises = favoris.map(async (id) => {
+    try {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/tv/${id}?api_key=${apiKey}&language=fr-FR`
+      );
+      if (!response.ok) throw new Error("Erreur API");
+      return await response.json();
+    } catch (e) {
+      console.error("Erreur API favori ID:", id, e);
+      return null;
+    }
+  });
+
+  const results = await Promise.all(promises);
+  return results.filter((s) => s); // enlève les null
+};
+

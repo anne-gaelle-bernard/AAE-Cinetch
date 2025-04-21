@@ -2,7 +2,7 @@
 import { fetchSeriesByPage } from "./api.js";
 import { setupPagination, setupSearch } from "./interface.js";
 
-export let currentPage = 2;
+export let currentPage = 1;
 export const totalPages = 10;
 
 window.addEventListener("DOMContentLoaded", () => {

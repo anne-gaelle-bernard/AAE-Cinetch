@@ -1,86 +1,122 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="FR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cinétech </title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css">
-  <script src="./script.js" defer></script>
-
- 
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinétech</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./script.js" defer></script>
+    
+</head>
 <body>
-  <!-- Navbar -->
-  <nav id="navbar">
-    <div class="container flex justify-between items-center">
-      <h1 class="logo">Cinétech</h1>
-      <div class="nav-links">
-        <a href="#" class="active">Accueil</a>
-        <a href="#">Séries</a>
-        <a href="#">Films</a>
-        <a href="#" id="favorites-link">Favoris</a>
-      </div>
-      <button id="mobile-menu-btn">☰</button>
-    </div>
-  </nav>
-  
-  <div id="mobile-menu">
-    <a href="#">Accueil</a>
-    <a href="#">Séries</a>
-    <a href="#">Films</a>
-    <a href="#" id="mobile-favorites">Favoris</a>
-  </div>
-
-  <!-- Main Content -->
-  <div class="container">
-    <!-- movie  -->
-    <div class="hero" id="hero">
-      <div class="hero-overlay"></div>
-      <div class="hero-content">
-        <span class="badge" id="hero-type">Film</span>
-        <h2 class="hero-title" id="hero-title">Titre du film</h2>
-        <div class="hero-info">
-          <span id="hero-year">2025</span>
-          <span class="rating" id="hero-rating">★★★★☆</span>
+    <!-- Cinétech Entrance Animation -->
+    <div class="cinetech-entrance">
+        <div class="cinetech-logo-container">
+            <div class="cinetech-logo">
+               
+                <span>C</span>
+                <span>I</span>
+                <span>N</span>
+                <span>E</span>
+                <span>T</span>
+                <span>E</span>
+                <span>C</span>
+                <span>H</span>
+            </div>
+            <div class="cinetech-tagline">Vos films, vos séries, votre univers.</div>
+            <div class="cinetech-loading-bar">
+                <div class="cinetech-loading-progress"></div>
+            </div>
         </div>
-        <p class="hero-description" id="hero-description">Description du film...</p>
-        <button class="btn" id="watch-btn">
-          ▶ Regarder Maintenant
-        </button>
-      </div>
     </div>
     
-    <!-- Categories -->
-    <div class="categories" id="categories">
-      <div class="category active" data-category="all">Tout</div>
-      <div class="category" data-category="series">Séries</div>
-      <div class="category" data-category="movies">Films</div>
-      <div class="category" data-category="trending">Tendances</div>
-      <div class="category" data-category="recent">Récents</div>
-    </div>
+    <header>
+        <div class="logo">CINÉTECH</div>
+        <nav>
+            <ul>
+                <li class="active" data-section="home">Home</li>
+                <li data-section="movies">Movies</li>
+                <li data-section="series">Series</li>
+                <li data-section="favorites">My List</li>
+            </ul>
+        </nav>
+    </header>
     
-    <!-- Series Section -->
-    <div class="content-section" id="series-section">
-      <h2 class="section-title">Séries Populaires</h2>
-      <div class="content-grid" id="series-container"></div>
-    </div>
+    <main>
+        <div id="home-section">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1 id="hero-title">Loading...</h1>
+                    <p id="hero-overview">Loading...</p>
+                    <div class="buttons">
+                        <button class="btn btn-play">Play</button>
+                        <button class="btn" id="hero-favorite-btn">Add to My List</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <h2>Trending Movies</h2>
+                <div class="slider" id="trending-movies"></div>
+            </div>
+            
+            <div class="row">
+                <h2>Popular Series</h2>
+                <div class="slider" id="popular-series"></div>
+            </div>
+            
+            <div class="row">
+                <h2>Top Rated</h2>
+                <div class="slider" id="top-rated"></div>
+            </div>
+        </div>
+        
+        <div id="movies-section" style="display: none;">
+            <div class="row">
+                <h2>Popular Movies</h2>
+                <div class="slider" id="popular-movies"></div>
+            </div>
+            
+            <div class="row">
+                <h2>Action Movies</h2>
+                <div class="slider" id="action-movies"></div>
+            </div>
+            
+            <div class="row">
+                <h2>Comedy Movies</h2>
+                <div class="slider" id="comedy-movies"></div>
+            </div>
+        </div>
+        
+        <div id="series-section" style="display: none;">
+            <div class="row">
+                <h2>Trending Series</h2>
+                <div class="slider" id="trending-series"></div>
+            </div>
+            
+            <div class="row">
+                <h2>Drama Series</h2>
+                <div class="slider" id="drama-series"></div>
+            </div>
+            
+            <div class="row">
+                <h2>Sci-Fi Series</h2>
+                <div class="slider" id="scifi-series"></div>
+            </div>
+        </div>
+        
+        <div id="favorites-section" style="display: none;">
+            <div class="row">
+                <h2>My List</h2>
+                <div class="slider" id="favorites-list"></div>
+            </div>
+        </div>
+    </main>
     
-    <!-- Movies Section -->
-    <div class="content-section" id="movies-section">
-      <h2 class="section-title">Films Populaires</h2>
-      <div class="content-grid" id="movies-container"></div>
-    </div>
-  </div>
-  
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 Cinétech. Tous droits réservés.</p>
-  </footer>
-  
-  <!-- Toast notification -->
-  <div id="toast"></div>
+    <footer>
+        <p>&copy; 2025 Cinétech </p>
+    </footer>
 
-  
+    
 </body>
 </html>

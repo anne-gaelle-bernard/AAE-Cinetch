@@ -1,323 +1,307 @@
 
-    // API Key for TMDB
-    const apiKey = "acd658a6376438e3aa6631ccb18c6227";
-    
-    // DOM Elements
-    const seriesContainer = document.getElementById("series-container");
-    const moviesContainer = document.getElementById("movies-container");
-    const hero = document.getElementById("hero");
-    const heroTitle = document.getElementById("hero-title");
-    const heroType = document.getElementById("hero-type");
-    const heroYear = document.getElementById("hero-year");
-    const heroRating = document.getElementById("hero-rating");
-    const heroDescription = document.getElementById("hero-description");
-    const categories = document.querySelectorAll(".category");
-    const watchBtn = document.getElementById("watch-btn");
-    const favoritesLink = document.getElementById("favorites-link");
-    const mobileFavorites = document.getElementById("mobile-favorites");
-    const mobileMenuBtn = document.getElementById("mobile-menu-btn");
-    const mobileMenu = document.getElementById("mobile-menu");
-    const toast = document.getElementById("toast");
-    
-    // App Data
-    let allSeries = [];
-    let allMovies = [];
-    let currentCategory = "all";
-    
-    // Mobile menu toggle
-    mobileMenuBtn.addEventListener("click", () => {
-      mobileMenu.style.display = mobileMenu.style.display === "block" ? "none" : "block";
-    });
-    
-    // Show toast notification
-    function showToast(message, duration = 3000) {
-      toast.textContent = message;
-      toast.style.opacity = "1";
-      toast.style.transform = "translateY(0)";
-      
-      setTimeout(() => {
-        toast.style.opacity = "0";
-        toast.style.transform = "translateY(20px)";
-      }, duration);
-    }
-    
-    // Format rating as stars
-    function getStarRating(rating) {
-      const stars = Math.round(rating) / 2; // Convert to 5-star scale
-      return "★".repeat(Math.floor(stars)) + "☆".repeat(5 - Math.floor(stars));
-    }
-    
-    // Create content card
-    function createCard(item, type) {
-      const card = document.createElement("div");
-      card.classList.add("card");
-      
-      const imageUrl = item.poster_path
-        ? `https://image.tmdb.org/t/p/w300${item.poster_path}`
-        : "https://via.placeholder.com/300x450?text=Pas+d'image";
-      
-      // Check if in favorites
-      const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-      const isFavorite = favorites.some(fav => fav.id === item.id && fav.type === type);
-      
-      card.innerHTML = `
-        <img src="${imageUrl}" alt="${item.title || item.name}">
-        <div class="favorite">${isFavorite ? "❤️" : "🤍"}</div>
-        <div class="card-info">
-          <h3 class="card-title">${item.title || item.name}</h3>
-          <div class="card-meta">
-            <span>${type === "movie" ? new Date(item.release_date).getFullYear() : new Date(item.first_air_date).getFullYear()}</span>
-            <span class="rating">${getStarRating(item.vote_average)}</span>
-          </div>
-        </div>
-      `;
-      
-      // Toggle favorite
-      const favoriteBtn = card.querySelector(".favorite");
-      favoriteBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        toggleFavorite(item, type, favoriteBtn);
-      });
-      
-      // Show in hero when clicked
-      card.addEventListener("click", () => {
-        displayInHero(item, type);
-      });
-      
-      return card;
-    }
-    
-    // Toggle favorite status
-    function toggleFavorite(item, type, button) {
-      let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-      const index = favorites.findIndex(fav => fav.id === item.id && fav.type === type);
-      
-      if (index !== -1) {
-        // Remove from favorites
-        favorites.splice(index, 1);
-        button.textContent = "🤍";
-        showToast(`${item.title || item.name} retiré des favoris`);
-      } else {
-        // Add to favorites
-        favorites.push({
-          id: item.id,
-          type: type,
-          title: item.title || item.name,
-          poster_path: item.poster_path,
-          vote_average: item.vote_average,
-          release_date: item.release_date || item.first_air_date,
-          overview: item.overview
+        // Cinétech Entrance Animation
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const entrance = document.querySelector('.cinetech-entrance');
+                entrance.style.opacity = '0';
+                setTimeout(() => {
+                    entrance.style.display = 'none';
+                }, 1000);
+            }, 2500);
         });
-        button.textContent = "❤️";
-        showToast(`${item.title || item.name} ajouté aux favoris`);
-      }
-      
-      localStorage.setItem("favorites", JSON.stringify(favorites));
-    }
-    
-    // Display content in hero section
-    function displayInHero(item, type) {
-      const backdropUrl = item.backdrop_path 
-        ? `https://image.tmdb.org/t/p/original${item.backdrop_path}`
-        : (item.poster_path ? `https://image.tmdb.org/t/p/original${item.poster_path}` : null);
-      
-      if (backdropUrl) {
-        hero.style.backgroundImage = `url(${backdropUrl})`;
-      }
-      
-      heroType.textContent = type === "movie" ? "Film" : "Série";
-      heroTitle.textContent = item.title || item.name;
-      heroDescription.textContent = item.overview || "Aucune description disponible.";
-      
-      const releaseDate = type === "movie" ? item.release_date : item.first_air_date;
-      heroYear.textContent = releaseDate ? new Date(releaseDate).getFullYear() : "N/A";
-      
-      heroRating.textContent = getStarRating(item.vote_average);
-      
-      // Scroll to top
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    }
-    
-    // Display random featured content
-    function displayRandomContent() {
-      const allContent = [...allSeries, ...allMovies];
-      if (allContent.length === 0) return;
-      
-      const randomItem = allContent[Math.floor(Math.random() * allContent.length)];
-      const type = randomItem.hasOwnProperty("first_air_date") ? "tv" : "movie";
-      
-      displayInHero(randomItem, type);
-    }
-    
-    // Filter content by category
-    function filterByCategory(category) {
-      // Update active tab
-      categories.forEach(tab => {
-        tab.classList.toggle("active", tab.dataset.category === category);
-      });
-      
-      currentCategory = category;
-      
-      // Show random content when switching categories
-      displayRandomContent();
-      
-      switch(category) {
-        case "series":
-          renderContent(seriesContainer, allSeries, "tv");
-          document.getElementById("series-section").style.display = "block";
-          document.getElementById("movies-section").style.display = "none";
-          break;
-          
-        case "movies":
-          renderContent(moviesContainer, allMovies, "movie");
-          document.getElementById("series-section").style.display = "none";
-          document.getElementById("movies-section").style.display = "block";
-          break;
-          
-        case "trending":
-          const trending = [...allSeries, ...allMovies].sort((a, b) => b.popularity - a.popularity);
-          const trendingSeries = trending.filter(item => item.hasOwnProperty("first_air_date"));
-          const trendingMovies = trending.filter(item => item.hasOwnProperty("release_date"));
-          
-          document.getElementById("series-section").style.display = "block";
-          document.getElementById("movies-section").style.display = "block";
-          document.querySelector("#series-section .section-title").textContent = "Séries Tendances";
-          document.querySelector("#movies-section .section-title").textContent = "Films Tendances";
-          
-          renderContent(seriesContainer, trendingSeries, "tv");
-          renderContent(moviesContainer, trendingMovies, "movie");
-          break;
-          
-        case "recent":
-          const sortByDate = (a, b) => {
-            const dateA = new Date(a.release_date || a.first_air_date || "2000-01-01");
-            const dateB = new Date(b.release_date || b.first_air_date || "2000-01-01");
-            return dateB - dateA;
-          };
-          
-          const recentContent = [...allSeries, ...allMovies].sort(sortByDate);
-          const recentSeries = recentContent.filter(item => item.hasOwnProperty("first_air_date"));
-          const recentMovies = recentContent.filter(item => item.hasOwnProperty("release_date"));
-          
-          document.getElementById("series-section").style.display = "block";
-          document.getElementById("movies-section").style.display = "block";
-          document.querySelector("#series-section .section-title").textContent = "Séries Récentes";
-          document.querySelector("#movies-section .section-title").textContent = "Films Récents";
-          
-          renderContent(seriesContainer, recentSeries, "tv");
-          renderContent(moviesContainer, recentMovies, "movie");
-          break;
-          
-        default: // "all"
-          document.getElementById("series-section").style.display = "block";
-          document.getElementById("movies-section").style.display = "block";
-          document.querySelector("#series-section .section-title").textContent = "Séries Populaires";
-          document.querySelector("#movies-section .section-title").textContent = "Films Populaires";
-          
-          renderContent(seriesContainer, allSeries, "tv");
-          renderContent(moviesContainer, allMovies, "movie");
-      }
-    }
-    
-    // Show favorites
-    function showFavorites() {
-      const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-      
-      if (favorites.length === 0) {
-        showToast("Vous n'avez pas encore de favoris");
-        return;
-      }
-      
-      const favSeries = favorites.filter(item => item.type === "tv");
-      const favMovies = favorites.filter(item => item.type === "movie");
-      
-      document.getElementById("series-section").style.display = "block";
-      document.getElementById("movies-section").style.display = "block";
-      document.querySelector("#series-section .section-title").textContent = "Séries Favorites";
-      document.querySelector("#movies-section .section-title").textContent = "Films Favoris";
-      
-      // Unselect all category tabs
-      categories.forEach(tab => tab.classList.remove("active"));
-      
-      renderContent(seriesContainer, favSeries, "tv");
-      renderContent(moviesContainer, favMovies, "movie");
-    }
-    
-    // Render content to container
-    function renderContent(container, items, type) {
-      container.innerHTML = "";
-      
-      if (items.length === 0) {
-        container.innerHTML = "<p style='color: #888; padding: 20px 0;'>Aucun contenu disponible</p>";
-        return;
-      }
-      
-      items.forEach(item => {
-        const card = createCard(item, type);
-        container.appendChild(card);
-      });
-    }
-    
-    // Fetch series from API
-    async function fetchSeries() {
-      try {
-        const response = await fetch(`https://api.themoviedb.org/3/tv/popular?api_key=${apiKey}&language=fr-FR&page=1`);
-        const data = await response.json();
-        allSeries = data.results;
-        return data.results;
-      } catch (error) {
-        console.error("Erreur lors du chargement des séries:", error);
-        return [];
-      }
-    }
-    
-    // Fetch movies from API
-    async function fetchMovies() {
-      try {
-        const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=fr-FR&page=1`);
-        const data = await response.json();
-        allMovies = data.results;
-        return data.results;
-      } catch (error) {
-        console.error("Erreur lors du chargement des films:", error);
-        return [];
-      }
-    }
-    
-    // Initialize app
-    async function init() {
-      // Fetch data
-      await Promise.all([fetchSeries(), fetchMovies()]);
-      
-      // Show initial category
-      filterByCategory("all");
-      
-      // Set up event listeners
-      categories.forEach(tab => {
-        tab.addEventListener("click", () => {
-          filterByCategory(tab.dataset.category);
-        });
-      });
-      
-      favoritesLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        showFavorites();
-      });
-      
-      mobileFavorites.addEventListener("click", (e) => {
-        e.preventDefault();
-        showFavorites();
-        mobileMenu.style.display = "none";
-      });
-      
-      watchBtn.addEventListener("click", () => {
-        showToast("La lecture commence...");
-      });
-    }
-    
-    // Start the app
-    init();
-  
+        
+        // API Configuration
+        const apiKey = "acd658a6376438e3aa6631ccb18c6227";
+        const baseURL = "https://api.themoviedb.org/3";
+        const imageBaseURL = "https://image.tmdb.org/t/p/";
+        
+        // Favorites Management
+        let favorites = [];
+        
+        // Load favorites from localStorage
+        function loadFavorites() {
+            const storedFavorites = localStorage.getItem('cinetech-favorites');
+            if (storedFavorites) {
+                favorites = JSON.parse(storedFavorites);
+            }
+        }
+        
+        // Save favorites to localStorage
+        function saveFavorites() {
+            localStorage.setItem('cinetech-favorites', JSON.stringify(favorites));
+        }
+        
+        // Add or remove from favorites
+        function toggleFavorite(media) {
+            const index = favorites.findIndex(item => 
+                item.id === media.id && item.type === media.type
+            );
+            
+            if (index === -1) {
+                favorites.push(media);
+            } else {
+                favorites.splice(index, 1);
+            }
+            
+            saveFavorites();
+            renderFavorites();
+            
+            // Update favorite buttons on all sections
+            document.querySelectorAll(`.favorite-btn[data-id="${media.id}"][data-type="${media.type}"]`).forEach(btn => {
+                btn.classList.toggle('active');
+                btn.innerHTML = isFavorite(media.id, media.type) ? '❤' : '♡';
+            });
+        }
+        
+        // Check if item is in favorites
+        function isFavorite(id, type) {
+            return favorites.some(item => item.id === id && item.type === type);
+        }
+        
+        // Fetch data from API
+        async function fetchData(endpoint) {
+            try {
+                const response = await fetch(`${baseURL}${endpoint}`);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                return null;
+            }
+        }
+        
+        // Create movie card
+        function createMediaCard(item, type = 'movie') {
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+            
+            const posterPath = item.poster_path || item.backdrop_path;
+            const imageUrl = posterPath ? `${imageBaseURL}w500${posterPath}` : '/api/placeholder/200/300';
+            
+            // Store media info
+            const media = {
+                id: item.id,
+                type: type,
+                title: item.title || item.name,
+                overview: item.overview,
+                poster_path: item.poster_path,
+                backdrop_path: item.backdrop_path
+            };
+            
+            card.innerHTML = `
+                <img src="${imageUrl}" alt="${media.title}">
+                <button class="favorite-btn ${isFavorite(media.id, type) ? 'active' : ''}" 
+                       data-id="${media.id}" 
+                       data-type="${type}">
+                    ${isFavorite(media.id, type) ? '❤' : '♡'}
+                </button>
+                <div class="movie-info">
+                    <h3>${media.title}</h3>
+                    <p>${item.vote_average ? item.vote_average.toFixed(1) + '/10' : 'No rating'}</p>
+                </div>
+            `;
+            
+            // Add event listeners
+            card.addEventListener('click', () => {
+                updateHero(media);
+            });
+            
+            const favBtn = card.querySelector('.favorite-btn');
+            favBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleFavorite(media);
+            });
+            
+            return card;
+        }
+        
+        // Populate a slider with media items
+        function populateSlider(containerId, items, mediaType = 'movie') {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            // Randomize the order of items
+            const shuffledItems = [...items].sort(() => Math.random() - 0.5);
+            
+            // Take at most 15 items
+            const selectedItems = shuffledItems.slice(0, 15);
+            
+            selectedItems.forEach(item => {
+                const card = createMediaCard(item, mediaType);
+                container.appendChild(card);
+            });
+        }
+        
+        // Update hero section
+        function updateHero(media) {
+            const heroSection = document.querySelector('.hero');
+            const heroTitle = document.getElementById('hero-title');
+            const heroOverview = document.getElementById('hero-overview');
+            const heroFavoriteBtn = document.getElementById('hero-favorite-btn');
+            
+            heroTitle.textContent = media.title;
+            heroOverview.textContent = media.overview || 'No description available';
+            
+            if (media.backdrop_path) {
+                heroSection.style.backgroundImage = `url(${imageBaseURL}original${media.backdrop_path})`;
+            } else if (media.poster_path) {
+                heroSection.style.backgroundImage = `url(${imageBaseURL}original${media.poster_path})`;
+            }
+            
+            heroFavoriteBtn.textContent = isFavorite(media.id, media.type) ? 'Remove from My List' : 'Add to My List';
+            
+            heroFavoriteBtn.onclick = () => {
+                toggleFavorite(media);
+                heroFavoriteBtn.textContent = isFavorite(media.id, media.type) ? 'Remove from My List' : 'Add to My List';
+            };
+        }
+        
+        // Render favorites section
+        function renderFavorites() {
+            const container = document.getElementById('favorites-list');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (favorites.length === 0) {
+                const message = document.createElement('p');
+                message.textContent = 'You have no items in your list. Add some favorites!';
+                message.style.padding = '20px';
+                container.appendChild(message);
+                return;
+            }
+            
+            favorites.forEach(media => {
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                
+                const posterPath = media.poster_path || media.backdrop_path;
+                const imageUrl = posterPath ? `${imageBaseURL}w500${posterPath}` : '/api/placeholder/200/300';
+                
+                card.innerHTML = `
+                    <img src="${imageUrl}" alt="${media.title}">
+                    <button class="favorite-btn active" data-id="${media.id}" data-type="${media.type}">❤</button>
+                    <div class="movie-info">
+                        <h3>${media.title}</h3>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    updateHero(media);
+                });
+                
+                const favBtn = card.querySelector('.favorite-btn');
+                favBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleFavorite(media);
+                });
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // Navigation
+        function setupNavigation() {
+            const navItems = document.querySelectorAll('nav ul li');
+            const sections = {
+                'home': document.getElementById('home-section'),
+                'movies': document.getElementById('movies-section'),
+                'series': document.getElementById('series-section'),
+                'favorites': document.getElementById('favorites-section')
+            };
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    // Update active nav item
+                    navItems.forEach(navItem => navItem.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // Show current section, hide others
+                    const sectionId = item.getAttribute('data-section');
+                    Object.keys(sections).forEach(key => {
+                        if (sections[key]) {
+                            sections[key].style.display = key === sectionId ? 'block' : 'none';
+                        }
+                    });
+                    
+                    // If favorites section is selected, re-render it
+                    if (sectionId === 'favorites') {
+                        renderFavorites();
+                    }
+                });
+            });
+        }
+        
+        // Initialize app
+        async function init() {
+            loadFavorites();
+            setupNavigation();
+            
+            // Fetch initial data
+            const trendingMovies = await fetchData('/trending/movie/week?api_key=' + apiKey);
+            const popularSeries = await fetchData('/tv/popular?api_key=' + apiKey);
+            const topRated = await fetchData('/movie/top_rated?api_key=' + apiKey);
+            
+            // Home page content
+            if (trendingMovies && trendingMovies.results) {
+                populateSlider('trending-movies', trendingMovies.results, 'movie');
+                // Set hero banner to a random trending movie
+                const randomIndex = Math.floor(Math.random() * trendingMovies.results.length);
+                updateHero({
+                    ...trendingMovies.results[randomIndex],
+                    title: trendingMovies.results[randomIndex].title,
+                    type: 'movie'
+                });
+            }
+            
+            if (popularSeries && popularSeries.results) {
+                populateSlider('popular-series', popularSeries.results, 'tv');
+            }
+            
+            if (topRated && topRated.results) {
+                populateSlider('top-rated', topRated.results, 'movie');
+            }
+            
+            // Movies section content
+            const popularMovies = await fetchData('/movie/popular?api_key=' + apiKey);
+            const actionMovies = await fetchData('/discover/movie?api_key=' + apiKey + '&with_genres=28');
+            const comedyMovies = await fetchData('/discover/movie?api_key=' + apiKey + '&with_genres=35');
+            
+            if (popularMovies && popularMovies.results) {
+                populateSlider('popular-movies', popularMovies.results, 'movie');
+            }
+            
+            if (actionMovies && actionMovies.results) {
+                populateSlider('action-movies', actionMovies.results, 'movie');
+            }
+            
+            if (comedyMovies && comedyMovies.results) {
+                populateSlider('comedy-movies', comedyMovies.results, 'movie');
+            }
+            
+            // Series section content
+            const trendingSeries = await fetchData('/trending/tv/week?api_key=' + apiKey);
+            const dramaSeries = await fetchData('/discover/tv?api_key=' + apiKey + '&with_genres=18');
+            const scifiSeries = await fetchData('/discover/tv?api_key=' + apiKey + '&with_genres=10765');
+            
+            if (trendingSeries && trendingSeries.results) {
+                populateSlider('trending-series', trendingSeries.results, 'tv');
+            }
+            
+            if (dramaSeries && dramaSeries.results) {
+                populateSlider('drama-series', dramaSeries.results, 'tv');
+            }
+            
+            if (scifiSeries && scifiSeries.results) {
+                populateSlider('scifi-series', scifiSeries.results, 'tv');
+            }
+            
+            // Render favorites
+            renderFavorites();
+        }
+        
+        // Run init when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+   

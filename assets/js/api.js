@@ -5,7 +5,7 @@ import { currentPage } from "./principale.js";
 // Clé API
 const apiKey = "acd658a6376438e3aa6631ccb18c6227";
 
-// URL genres TV (corrigée)
+// URL genres TV 
 const genreUrl = `https://api.themoviedb.org/3/genre/tv/list?api_key=${apiKey}&language=fr-FR`;
 
 // Stockage des genres

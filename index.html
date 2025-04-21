@@ -3,79 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Série Streaming</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Cinétech </title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
-  <script src ="./script.js" defer></script>
+  <script src="./script.js" defer></script>
+
  
-</head>
-<body class="text-white min-h-screen">
+
+<body>
   <!-- Navbar -->
-  <nav id="navbar" class="fixed top-0 w-full bg-[#0a0a0a] bg-opacity-90 transition-all duration-300 z-50">
-    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-      <h1 class="text-3xl font-bold text-red-600">Série Streaming</h1>
-      <div class="space-x-4 hidden md:flex items-center">
-        <a href="#" class="hover:text-red-500 transition-colors">Accueil</a>
-        <a href="#" class="hover:text-red-500 transition-colors">Séries</a>
-        <a href="#" class="hover:text-red-500 transition-colors">Films</a>
-        <button id="favorites-btn" class="btn text-sm">Mes Favoris</button>
+  <nav id="navbar">
+    <div class="container flex justify-between items-center">
+      <h1 class="logo">Cinétech</h1>
+      <div class="nav-links">
+        <a href="#" class="active">Accueil</a>
+        <a href="#">Séries</a>
+        <a href="#">Films</a>
+        <a href="#" id="favorites-link">Favoris</a>
       </div>
-      <button class="md:hidden text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" aria-label="Toggle menu">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-    </div>
-    <div id="mobile-menu" class="hidden md:hidden bg-[#0a0a0a] px-4 py-2">
-      <a href="#" class="block py-2 hover:text-red-500">Accueil</a>
-      <a href="#" class="block py-2 hover:text-red-500">Séries</a>
-      <a href="#" class="block py-2 hover:text-red-500">Films</a>
-      <button id="mobile-favorites-btn" class="btn text-sm mt-2 w-full text-left">Mes Favoris</button>
+      <button id="mobile-menu-btn">☰</button>
     </div>
   </nav>
+  
+  <div id="mobile-menu">
+    <a href="#">Accueil</a>
+    <a href="#">Séries</a>
+    <a href="#">Films</a>
+    <a href="#" id="mobile-favorites">Favoris</a>
+  </div>
 
   <!-- Main Content -->
-  <main class="container mx-auto px-4 pt-20 pb-8">
-    <!-- Hero Section -->
-    <section id="hero-section" class="hero-section">
+  <div class="container">
+    <!-- movie  -->
+    <div class="hero" id="hero">
       <div class="hero-overlay"></div>
       <div class="hero-content">
-        <h2 id="hero-title" class="text-4xl md:text-5xl font-bold mb-2"></h2>
-        <p id="hero-overview" class="text-lg md:text-xl mb-4 line-clamp-3"></p>
-        <button class="btn">Regarder Maintenant</button>
+        <span class="badge" id="hero-type">Film</span>
+        <h2 class="hero-title" id="hero-title">Titre du film</h2>
+        <div class="hero-info">
+          <span id="hero-year">2025</span>
+          <span class="rating" id="hero-rating">★★★★☆</span>
+        </div>
+        <p class="hero-description" id="hero-description">Description du film...</p>
+        <button class="btn" id="watch-btn">
+          ▶ Regarder Maintenant
+        </button>
       </div>
-    </section>
+    </div>
+    
+    <!-- Categories -->
+    <div class="categories" id="categories">
+      <div class="category active" data-category="all">Tout</div>
+      <div class="category" data-category="series">Séries</div>
+      <div class="category" data-category="movies">Films</div>
+      <div class="category" data-category="trending">Tendances</div>
+      <div class="category" data-category="recent">Récents</div>
+    </div>
+    
+    <!-- Series Section -->
+    <div class="content-section" id="series-section">
+      <h2 class="section-title">Séries Populaires</h2>
+      <div class="content-grid" id="series-container"></div>
+    </div>
+    
+    <!-- Movies Section -->
+    <div class="content-section" id="movies-section">
+      <h2 class="section-title">Films Populaires</h2>
+      <div class="content-grid" id="movies-container"></div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Cinétech. Tous droits réservés.</p>
+  </footer>
+  
+  <!-- Toast notification -->
+  <div id="toast"></div>
 
-    <!-- Search Bar -->
-    <section class="mb-8">
-      <div class="suggestions-container max-w-md mx-auto">
-        <input
-          type="text"
-          id="search-input"
-          placeholder="Rechercher une série..."
-          class="w-full p-3 rounded-lg bg-[#222] text-white border border-[#444] focus:outline-none focus:border-red-500 transition-all"
-          aria-label="Rechercher une série"
-        >
-        <div id="suggestions" class="hidden"></div>
-      </div>
-    </section>
-
-    <!-- Favorites Filter -->
-    <section class="mb-8">
-      <button id="all-series-btn" class="btn hidden">Toutes les Séries</button>
-    </section>
-
-    <!-- Series Carousel -->
-    <section>
-      <h2 id="carousel-title">Séries Populaires</h2>
-      <div class="carousel-container">
-        <div id="serie-container" class="carousel scrollbar-hide" role="region" aria-label="Carrousel de séries"></div>
-        <button class="carousel-button left" onclick="scrollCarousel('serie-container', -1)" aria-label="Précédent">←</button>
-        <button class="carousel-button right" onclick="scrollCarousel('serie-container', 1)" aria-label="Suivant">→</button>
-      </div>
-    </section>
-  </main>
-
+  
 </body>
 </html>
